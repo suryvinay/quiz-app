@@ -1,0 +1,165 @@
+<!DOCtype html>
+<html>
+
+<head>
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <h1>simple quiz</h1>
+        <div class="quiz">
+            <h2 id="question">question goes here</h2>
+            <div id="answer-buttons">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+    <!-- <script src="script.js"></script> -->
+    <script>
+        const questions = [
+            {
+                question: "which is largest animal in the world?",
+                answers: [
+                    { text: "Shark", correct: false },
+                    { text: "Blue whale", correct: true },
+                    { text: "Elephant", correct: false },
+                    { text: "Giraffe", correct: false },
+
+                ]
+            },
+            {
+                question: "which is largest river in the world?",
+                answers: [
+                    { text: "Nile", correct: true },
+                    { text: "Godavari", correct: false },
+                    { text: "Yamuna", correct: false },
+                    { text: "Krishna", correct: false },
+                ]
+            },
+            {
+                question: "which is largest ocean in the world?",
+                answers: [
+                    { text: "Arctic", correct: false },
+                    { text: "Indian", correct: false },
+                    { text: "Pacific", correct: true },
+                    { text: "Atlantic", correct: false },
+                ]
+            },
+            {
+                question: "which is largest desert in the world?",
+                answers: [
+                    { text: "Gobi", correct: false },
+                    { text: "Antartica", correct: false },
+                    { text: "Arctic polar", correct: false },
+                    { text: "Sahara", correct: true },
+                ]
+            },
+            {
+                question: "which is the national tree in the india?",
+                answers: [
+                    { text: "Mango", correct: false },
+                    { text: "Neem", correct: false },
+                    { text: "Gauva", correct: false },
+                    { text: "Banyan", correct: true },
+                ]
+            }
+        ];
+
+        const questionElement = document.getElementById("question");
+        const answerButton = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.innerHTML = "Next";
+            showQuestion();
+        }
+
+        function resetState() {
+            nextButton.style.display = "none";
+            while (answerButton.firstChild) {
+                answerButton.removeChild(answerButton.firstChild);
+            }
+        }
+
+        function showQuestion() {
+            resetState();
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionNo = currentQuestionIndex + 1;
+            questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("btn");
+                answerButton.appendChild(button);
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct
+                }
+                button.addEventListener("click", selectAnswer);
+            });
+        }
+
+
+
+        function selectAnswer(e) {
+            const selectedBtn = e.target;
+            const isCorrect = selectedBtn.dataset.correct === "true"
+            if (isCorrect) {
+                selectedBtn.classList.add("correct")
+                score++;
+            } else {
+                selectedBtn.classList.add("incorrect")
+
+            }
+            Array.from(answerButton.children).forEach(button => {
+                if (button.dataset.correct === "true") {
+                    button.classList.add("correct")
+                }
+                button.disabled = true;
+            });
+            nextButton.style.display = "block";
+        }
+
+        function showScore() {
+            resetState();
+            questionElement.innerHTML = `You scored ${score} out of ${questions.length}`;
+            nextButton.innerHTML = "Play Again";
+            nextButton.style.display = "block";
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        nextButton.addEventListener("click", () => {
+            if (currentQuestionIndex < questions.length) {
+                handleNextButton()
+            } else {
+                startQuiz();
+
+            }
+        })
+
+        startQuiz();
+
+
+    </script>
+</body>
+
+</html>
